@@ -1,4 +1,5 @@
 require_relative("../db/sql_runner")
+require('pry')
 
 class Film
 
@@ -28,6 +29,19 @@ class Film
     SqlRunner.run(sql)
   end
 
+  def customers()
+    sql = "SELECT customers.* FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE film_id = #{@id}"
+    result = SqlRunner.run(sql)
+    return result.map{|customer| Customer.new(customer)}
+  end
+
+  def price()
+    sql = "SELECT films.price FROM films WHERE id = #{@id}"
+    film_price = SqlRunner.run(sql).first() 
+    return film_price['price'].to_i
+    binding.pry
+  end
+
   def self.all()
     sql = "SELECT * FROM films"
     result = SqlRunner.run(sql)
@@ -40,10 +54,10 @@ class Film
     SqlRunner.run(sql)
   end
 
-  def customers()
-    sql = "SELECT customers.* FROM customers INNER JOIN tickets ON customers.id = tickets.customer_id WHERE film_id = #{@id}"
+  def self.find_by_id(id)
+    sql = "SELECT * FROM films WHERE id = #{id}"
     result = SqlRunner.run(sql)
-    return result.map{|customer| Customer.new(customer)}
+    return result.map{|film| Film.new(film)}.first()
   end
 
 end

@@ -34,6 +34,12 @@ class Customer
     return result.map{|film| Film.new(film)}
   end
 
+  def funds()
+    sql = "SELECT customers.funds FROM customers WHERE id = #{@id}"
+    customer_funds = SqlRunner.run(sql).first() 
+    return customer_funds['funds'].to_i
+  end
+
   def self.all()
     sql = "SELECT * FROM customers"
     result = SqlRunner.run(sql)
@@ -44,6 +50,12 @@ class Customer
   def self.delete_all()
     sql = "DELETE FROM customers"
     SqlRunner.run(sql)
+  end
+
+  def self.find_by_id(id)
+    sql = "SELECT * FROM customers WHERE id = #{id}"
+    result = SqlRunner.run(sql)
+    return result.map{|customer| Customer.new(customer)}.first()
   end
 
 end
